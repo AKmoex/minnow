@@ -29,6 +29,19 @@ public:
    */
   void insert( uint64_t first_index, std::string data, bool is_last_substring, Writer& output );
 
+
   // How many bytes are stored in the Reassembler itself?
   uint64_t bytes_pending() const;
+
+private:
+
+  std::deque<char> buffer_ = {};
+  std::deque<bool> flag_ = {};
+  uint64_t unassembled_bytes_ = 0;
+  // total_bytes_ 表示总共需要push的数据
+  uint64_t total_bytes_ = -1;
+
+  void update_buffer( uint64_t begin_index, uint64_t end_index, uint64_t first_index, uint64_t first_unassembled_index, std::string data);
+  void check_close( Writer& output );
+
 };
