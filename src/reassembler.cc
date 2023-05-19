@@ -30,8 +30,8 @@ void Reassembler::insert( uint64_t first_index, string data, bool is_last_substr
   if( begin_index < first_unassembled_index ){
     begin_index = first_unassembled_index;
   }
-  if( end_index > first_unacceptable_index ){
-    end_index = first_unacceptable_index;
+  if( end_index >= first_unacceptable_index ){
+    end_index = first_unacceptable_index-1;
   }
 
   update_buffer( begin_index, end_index, first_index, first_unassembled_index, data );
