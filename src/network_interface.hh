@@ -41,6 +41,22 @@ private:
   // IP (known as Internet-layer or network-layer) address of the interface
   Address ip_address_;
 
+  // ARP缓存表, 记录IP-(MAC,TIME)键值对
+  std::unordered_map<uint32_t,std::pair<EthernetAddress,uint64_t>>arp_table_{};
+
+  // 要发的帧, 包括arp帧和数据帧
+  std::deque<EthernetFrame> frames_out_{};
+  // 未发的数据报, 因为还不知道下一跳的MAC
+  std::deque<std::pair<InternetDatagram,Address>> datagrams_out_{};
+
+  // 时间, 单位是ms
+  uint64_t time_{0};
+  // 已发送的arp请求的 ip和时间, 避免重复请求同一个ip的mac地址
+  std::unordered_map<uint32_t,uint64_t>send_arp_time_{};
+
+
+
+
 public:
   // Construct a network interface with given Ethernet (network-access-layer) and IP (internet-layer)
   // addresses

@@ -23,13 +23,10 @@ uint64_t TCPSender::consecutive_retransmissions() const
 
 optional<TCPSenderMessage> TCPSender::maybe_send()
 {
-  ::printf("调用了maybe_send()函数\n");
   if(messages_.empty()){
-    ::printf("empty\n");
     return {};
   }
   if(retransmissions_num_ && timer.is_running() && timer.get_time()>0){
-    ::printf("11111\n");
     return {};
   }
 
@@ -76,7 +73,6 @@ void TCPSender::push( Reader& outbound_stream )
     if(message.sequence_length()>0 && !timer.is_running()){
       timer.set_RTO(initial_RTO_ms_);
       timer.start();
-      printf("push()调用了start()\n\n");
     }
   }
 }
@@ -117,38 +113,22 @@ void TCPSender::receive( const TCPReceiverMessage& msg )
 //  }
 //  else{
 //    timer.start();
-//    printf("receive()调用了start()\n");
 //
 //  }
   retransmissions_num_ = 0;
-  ::printf("win: %u\n",window_size_);
-  ::printf("outstanding_messages_: %zu\n",outstanding_messages_.size());
-  ::printf("messages_: %zu\n\n",messages_.size());
 }
 
 void TCPSender::tick( uint64_t ms_since_last_tick )
 {
-  ::printf("调用了tick(): %lu\n",ms_since_last_tick);
-  ::printf("当前的time_值：%lu\n",timer.get_time());
-  ::printf("当前的RTO_值：%lu\n", timer.get_RTO());
 
-  ::printf("Timer是否运行: %d\n",timer.is_running());
   if(timer.is_expired(ms_since_last_tick) && !outstanding_messages_.empty() ){
-    printf("过期了：\n");
-    ::printf("time: %lu    rto: %lu\n",timer.get_time(),timer.get_RTO());
-
      messages_.push_back(outstanding_messages_.front());
-     ::printf("messages_.size(): %zu\n",messages_.size());
      if(window_size_>0 || outstanding_messages_.front().SYN){
       retransmissions_num_++;
       timer.set_RTO(timer.get_RTO()<<1);
      }
-     ::printf("retransmissions_num_: %lu\n",retransmissions_num_);
 
-     //maybe_send();
      timer.start();
-     printf("tick()调用了start()\n\n");
-
 
   }
 }

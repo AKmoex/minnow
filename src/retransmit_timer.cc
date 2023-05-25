@@ -29,12 +29,6 @@ void RetransmitTimer::stop()
 bool RetransmitTimer::is_expired( uint64_t ms_since_last_tick )
 {
   time_ += ms_since_last_tick;
-  if(time_>=RTO_){
-    printf("已过期\n");
-  }
-  else{
-    printf("没过期\n");
-  }
   return is_running_ && time_ >= RTO_;
 }
 
