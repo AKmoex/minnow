@@ -26,9 +26,6 @@ optional<TCPSenderMessage> TCPSender::maybe_send()
   if(messages_.empty()){
     return {};
   }
-  if(retransmissions_num_ && timer.is_running() && timer.get_time()>0){
-    return {};
-  }
 
   TCPSenderMessage message = messages_.front();
   messages_.pop_front();
